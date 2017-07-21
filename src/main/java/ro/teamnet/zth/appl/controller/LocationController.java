@@ -1,24 +1,21 @@
 package ro.teamnet.zth.appl.controller;
 
-import ro.teamnet.zth.api.annotations.Z2HController;
-import ro.teamnet.zth.api.annotations.Z2HRequestMethod;
-import ro.teamnet.zth.api.annotations.Z2HRequestParam;
-import ro.teamnet.zth.appl.domain.Location;
-import ro.teamnet.zth.appl.service.LocationService;
+import ro.teamnet.zth.api.annotations.MyController;
+import ro.teamnet.zth.api.annotations.MyRequestMethod;
 
-import java.util.List;
-
-@Z2HController(urlPath = "/locations")
+/**
+ * Created by Ovidiu.Busuioc on 7/20/2017.
+ */
+@MyController(urlPath = "/locations")
 public class LocationController {
-    private LocationService locationService;
 
-    @Z2HRequestMethod(urlPath = "/all")
-    public List<Location> getAll() {
-        return locationService.findAll();
+    @MyRequestMethod(urlPath = "/all", methodType = "GET")
+    public String getAllLocations(){
+        return "allLocations";
     }
 
-    @Z2HRequestMethod(urlPath = "/one")
-    public Location getOne(@Z2HRequestParam(name = "id") Long locationId) {
-        return locationService.findOne(locationId);
+    @MyRequestMethod(urlPath = "/one", methodType = "GET")
+    public String getOneLocation(){
+        return "oneLocation";
     }
 }

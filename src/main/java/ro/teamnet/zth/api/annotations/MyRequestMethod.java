@@ -1,13 +1,15 @@
 package ro.teamnet.zth.api.annotations;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Created by Radu.Furculesteanu on 7/20/2017.
+ * Created by Ovidiu.Busuioc on 7/20/2017.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Documented
 public @interface MyRequestMethod {
     String urlPath();
     String methodType();

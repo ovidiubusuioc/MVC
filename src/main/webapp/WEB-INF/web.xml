@@ -7,13 +7,12 @@
 
     <!--Configurare servleti-->
     <servlet>
-        <servlet-name>MyDispatcherServlet</servlet-name>
-        <servlet-class>ro.teamnet.zth.web.MyDispatcherServlet</servlet-class>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <servlet-class>ro.teamnet.zth.api.em.MyDispatcherServlet</servlet-class>
     </servlet>
-    
     <servlet-mapping>
-        <servlet-name>MyDispatcherServlet</servlet-name>
-        <url-pattern>/mvc/*</url-pattern>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <url-pattern>/mvc</url-pattern>
     </servlet-mapping>
 
 </web-app>

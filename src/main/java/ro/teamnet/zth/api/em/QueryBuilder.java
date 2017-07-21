@@ -1,5 +1,7 @@
 package ro.teamnet.zth.api.em;
 
+import ro.teamnet.zth.api.annotations.Column;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
