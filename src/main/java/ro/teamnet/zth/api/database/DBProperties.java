@@ -3,7 +3,7 @@ package ro.teamnet.zth.api.database;
 
 public interface DBProperties {
     //TODO de inlocuit cu IP-ul din Docker
-    String IP = "localhost";
+    String IP = "192.168.99.100";
     String PORT = "49161";
     //TODO de inlocuit 1cu utilizatorul vostru
     String USER = "system";
