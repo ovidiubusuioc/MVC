@@ -1,6 +1,9 @@
 package ro.teamnet.zth;
 
+
+import ro.teamnet.zth.fmk.MethodAttributes;
 import ro.teamnet.zth.fmk.domain.HttpMethod;
+import ro.teamnet.zth.utils.BeanDeserializator;
 import ro.teamnet.zth.utils.ControllerScanner;
 
 import javax.servlet.ServletException;
@@ -8,11 +11,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 
 public class Z2HDispatcherServlet extends HttpServlet {
 
+    private ControllerScanner controllerScanner;
+
     @Override
     public void init() throws ServletException {
+        String packages = "ro.teamnet.zth.appl.controller";
+        controllerScanner = new ControllerScanner(packages);
+        controllerScanner.scan();
+
     }
 
     @Override
@@ -53,10 +65,28 @@ public class Z2HDispatcherServlet extends HttpServlet {
     }
 
     private void reply(HttpServletResponse resp, Object resultToDisplay) {
-
+        try {
+            resp.getWriter().write(resultToDisplay.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private Object dispatch(HttpServletRequest req, HttpMethod methodType) {
+    private Object dispatch(HttpServletRequest req, HttpMethod methodType) throws IllegalAccessException, InstantiationException {
+        MethodAttributes methodAttributes = controllerScanner.getMetaData(req.getPathInfo(),methodType);
+        Object objectToDisplay;
+        Class myClass = methodAttributes.getControllerClass();
+        Object object = myClass.newInstance();
+        try {
+            Method myMethod = methodAttributes.getMethod();
+            objectToDisplay = myMethod.invoke(object,BeanDeserializator.getMethodParams(myMethod,req).toArray());
+            return objectToDisplay;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 

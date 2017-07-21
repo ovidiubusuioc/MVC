@@ -68,6 +68,6 @@ public class EmployeeDaoTest {
         employee = employeeDao.insertEmployee(employee);
         List<Employee> newLoc = employeeDao.getAllEmployees();
 
-        assertEquals(oldLoc.size(), newLoc.size() - 1);
+        assertEquals(oldLoc.size(), newLoc.size() -1);
     }
 }
