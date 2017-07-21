@@ -1,5 +1,4 @@
 package ro.teamnet.zth.appl.controller;
-
 import ro.teamnet.zth.api.annotations.Z2HController;
 import ro.teamnet.zth.api.annotations.Z2HRequestMethod;
 import ro.teamnet.zth.api.annotations.Z2HRequestObject;
