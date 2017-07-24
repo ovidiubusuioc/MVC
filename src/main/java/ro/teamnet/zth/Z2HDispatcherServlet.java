@@ -1,9 +1,10 @@
 package ro.teamnet.zth;
 
-
+import org.codehaus.jackson.map.ObjectMapper;
 import ro.teamnet.zth.fmk.MethodAttributes;
 import ro.teamnet.zth.fmk.domain.HttpMethod;
 import ro.teamnet.zth.utils.BeanDeserializator;
+import ro.teamnet.zth.utils.ComponentScanner;
 import ro.teamnet.zth.utils.ControllerScanner;
 
 import javax.servlet.ServletException;
@@ -13,18 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+import java.util.List;
 
 public class Z2HDispatcherServlet extends HttpServlet {
+    private ComponentScanner controllerScanner;
 
-    private ControllerScanner controllerScanner;
 
     @Override
     public void init() throws ServletException {
-        String packages = "ro.teamnet.zth.appl.controller";
-        controllerScanner = new ControllerScanner(packages);
+        controllerScanner=new ControllerScanner("ro.teamnet.zth.appl.controller");
         controllerScanner.scan();
-
     }
 
     @Override
@@ -55,7 +54,7 @@ public class Z2HDispatcherServlet extends HttpServlet {
             try {
                 sendExceptionError(e, resp);
             } catch (IOException ioe) {
-                ioe.printStackTrace();
+                throw new RuntimeException(ioe);
             }
         }
     }
@@ -65,29 +64,29 @@ public class Z2HDispatcherServlet extends HttpServlet {
     }
 
     private void reply(HttpServletResponse resp, Object resultToDisplay) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        final String responseAsString;
         try {
-            resp.getWriter().write(resultToDisplay.toString());
+            responseAsString = objectMapper.writeValueAsString(resultToDisplay);
+            resp.getWriter().print(responseAsString);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+
     }
 
-    private Object dispatch(HttpServletRequest req, HttpMethod methodType) throws IllegalAccessException, InstantiationException {
-        MethodAttributes methodAttributes = controllerScanner.getMetaData(req.getPathInfo(),methodType);
-        Object objectToDisplay;
-        Class myClass = methodAttributes.getControllerClass();
-        Object object = myClass.newInstance();
+    private Object dispatch(HttpServletRequest req, HttpMethod methodType) {
+        String reqUrlPath=req.getPathInfo();
+        Object controllerInstance=controllerScanner.getInstance(reqUrlPath,methodType);
+        Method method=controllerScanner.getMethodMetaData(reqUrlPath,methodType).getMethod();
+        List<Object> params= BeanDeserializator.getMethodParams(method,req);
+        Object  ret;
         try {
-            Method myMethod = methodAttributes.getMethod();
-            objectToDisplay = myMethod.invoke(object,BeanDeserializator.getMethodParams(myMethod,req).toArray());
-            return objectToDisplay;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            ret = method.invoke(controllerInstance,params.toArray());
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
         }
-
-        return null;
+        return ret;
     }
 
 

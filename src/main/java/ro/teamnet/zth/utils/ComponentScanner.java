@@ -15,9 +15,11 @@ public interface ComponentScanner {
         return new BeanKey(urlPath, methodType);
     }
 
-    default MethodAttributes getMetaData(String uri, HttpMethod httpMethod) {
+    default MethodAttributes getMethodMetaData(String uri, HttpMethod httpMethod) {
         return null;
     }
+
+    Object getInstance(String uri,HttpMethod httpMethod);
 
 
 }

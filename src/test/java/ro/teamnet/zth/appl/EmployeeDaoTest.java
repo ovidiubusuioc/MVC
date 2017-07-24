@@ -37,7 +37,7 @@ public class EmployeeDaoTest {
 
         employee = employeeDao.insertEmployee(employee);
 
-        assertEquals(employeeDao.getEmployeeById(employee.getId()), employee);
+        assertEquals(employeeDao.getEmployeeById(employee.getEmployeeId()), employee);
     }
 
     @Test
@@ -45,13 +45,13 @@ public class EmployeeDaoTest {
         employee.setHireDate(new java.sql.Date(new Date().getTime()));
         employee = employeeDao.updateEmployee(employee);
 
-        assertEquals(employeeDao.getEmployeeById(employee.getId()), employee);
+        assertEquals(employeeDao.getEmployeeById(employee.getEmployeeId()), employee);
     }
 
     @Test
     public void cTestDeleteEmployee() {
         employeeDao.deleteEmployee(employee);
-        Employee locById = employeeDao.getEmployeeById(employee.getId());
+        Employee locById = employeeDao.getEmployeeById(employee.getEmployeeId());
 
         assertNull(locById);
     }
@@ -68,6 +68,6 @@ public class EmployeeDaoTest {
         employee = employeeDao.insertEmployee(employee);
         List<Employee> newLoc = employeeDao.getAllEmployees();
 
-        assertEquals(oldLoc.size(), newLoc.size() -1);
+        assertEquals(oldLoc.size(), newLoc.size() - 1);
     }
 }
